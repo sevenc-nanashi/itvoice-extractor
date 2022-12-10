@@ -4,15 +4,11 @@ mod extract_parts;
 mod merge_parts;
 mod validate_files;
 use console::{exit_with_pause, rgb, show_title};
+use std::process::Command;
 
 fn main() {
-    enable_ansi_support::enable_ansi_support().unwrap_or_else(|e| {
-        eprintln!(
-            "{}エラー: ANSIIコードのサポートが有効になっていません。{}",
-            rgb!(0xff0000),
-            rgb!()
-        );
-        eprintln!("{}エラー: {}", rgb!(0xff0000), e);
+    enable_ansi_support::enable_ansi_support().unwrap_or_else(|_| {
+        eprintln!("ANSIIコードのサポートを有効にできませんでした。");
         exit_with_pause(1);
     });
     show_title();
@@ -26,8 +22,7 @@ fn main() {
     let concat_file_path = merge_parts::run(&temp_dir);
 
     let final_dest = extract_merged::run(&concat_file_path);
-
-    temp_dir.close().unwrap();
+    drop(temp_dir);
 
     println!(
         "{}解凍に成功しました！{}\n  出力先：{}{}{}",
@@ -37,6 +32,11 @@ fn main() {
         final_dest.replace('/', "\\"),
         rgb!()
     );
+
+    Command::new("explorer")
+        .arg(final_dest.replace('/', "\\"))
+        .spawn()
+        .unwrap();
 
     exit_with_pause(0)
 }
