@@ -13,9 +13,9 @@ fn main() {
     });
     show_title();
 
-    let temp_dir = tempfile::tempdir().unwrap();
-
     let files = validate_files::run();
+
+    let temp_dir = tempfile::tempdir().unwrap();
 
     extract_parts::run(&files, &temp_dir);
 
