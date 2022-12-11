@@ -8,7 +8,7 @@ use std::process::Command;
 
 fn main() {
     enable_ansi_support::enable_ansi_support().unwrap_or_else(|_| {
-        eprintln!("ANSIIコードのサポートを有効にできませんでした。");
+        eprintln!("ANSIコードのサポートを有効にできませんでした。");
         exit_with_pause(1);
     });
     show_title();
